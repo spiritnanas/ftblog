@@ -118,6 +118,11 @@ The anatomy of the X.509 cert is important, some parts being more critical to ot
      <https://datatracker.ietf.org/doc/html/rfc6025>
 
   2. The encoded data is then digitally signed with the Signing CA's private key using the algorithm called out in the **signatureValue** field(s).
+ 
+- While I am not exploring extensions in detail yet, there are some very widely used extensions that are worth noting:
+  1. subjectAltName: the Subject Alternate Name is used to define additional subjects that this certificate could match. (google.com's certificate may have a subjectAltName of *.google.co.uk and *.google.co.jp for example)
+  2. KeyUsage: A set up flags defining how the certificate may be used. 
+  3. extKeyUsage: A newer additional set of flags definign how a certificate may be used. 
 
 ## Anatomy of PFX File
 
