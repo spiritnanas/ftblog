@@ -178,12 +178,12 @@ Note: There are three major players in 802.1x Authentication. The supplicant (th
 2. Either the supplicant sends an EAPOL (Extensable Autnetication Protocol Over LAN) start message or the authenticator sends an identity request message. 
 3. The supplicant sends it's NAI or Network Access Identifier. This is often discussed as user@domain, but that may not always be true.
 4. The identity is forwarded from the authenticator to the AAA server via RADIUS
-5. The AAA server issues a RADIUS access challenge
-6. The supplicant sends an EAPOL response auth
+5. The AAA server issues a RADIUS access challenge. This initiates the EAP-TLS proccess.
+6. The supplicant sends an EAPOL response auth. This contains portions of the TLS handshake. 
 7. The response auth is wrapped in a RADIUS packet and sent to the AAA server as a RADIUS access request. 
 #EAP-TLS Starts
-8. The TLS handshake proccess from above takes place, albeit slightly differently as it is encapsulated in EAP-TLS from the supplicant to the authenticator and then that EAP-TLS is encapsulated in RADIUS from the authenticator to the AAA server. 
-9. If all went well there is a RADIUS access acept sent from the AAA server to the authenticator. 
+8. The TLS handshake proccess from above takes place, between the supplicant and the AAA server
+9. If all went well there is a RADIUS access accept sent from the AAA server to the authenticator. 
 10. The client receives an EAPOL success message and is granted access. 
 
 Part 9
