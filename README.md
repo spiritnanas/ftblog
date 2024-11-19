@@ -81,6 +81,13 @@ Useful tool for viewing website certificates:
 
 <https://crt.sh>
 
+### Certificate Chain
+
+When you visit a website, if you look at the certificate, you will notice several other certificates along with the one for the website itself. This is because the Certificate Authority that gave the website its certificate, got its own from somewhere, and so on and so forth. 
+
+The idea here being that when you recieve a certificate, you also recieve the certificate that signed your certificate, all the way up to the Root CA for that certificate chain. 
+
+
 
 # Part 1
 
