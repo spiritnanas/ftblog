@@ -122,16 +122,18 @@ The next major concept to take on is the CSR, or the Certificate Signing Request
 
 2. The applicant creates a request with the following fields:
 
+   **This section needs more detail**
+
    - **2.1** X.509 Version
    - **2.2** subject: This is the same subject as from Part 1.
    - **2.3** subjectPKInfo: The algorithm the public key is to be used with, along with the public key. This is the same as the **subjectPublicKeyInfo** from Part 1.
    - **2.4** attributes
 
-3. The request is self-signed by the applicant, to prove they have the private key.
+4. The request is self-signed by the applicant, to prove they have the private key.
 
-4. The request is sent to the signing CA with proof of origin (*i.e.* providing the CA whatever they have defined to ensure you are who you say you are. For internal CAs this is determined by company policy.)
+5. The request is sent to the signing CA with proof of origin (*i.e.* providing the CA whatever they have defined to ensure you are who you say you are. For internal CAs this is determined by company policy.)
 
-5. The Signing CA, assuming everything is correct, will send back a complete X.509 Certificate signed with its private key. The policies on the Signing CA determine what fields are included past that.
+6. The Signing CA, assuming everything is correct, will send back a complete X.509 Certificate signed with its private key. The policies on the Signing CA determine what fields are included past that.
 
 # Part 3
 
