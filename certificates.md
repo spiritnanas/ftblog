@@ -1,6 +1,8 @@
 
 Part 0 
 
+Preface: I am not an expert on this topic. I am writing this blog as I go, and as I feel comfortable with the information I have learned. I found it very challenging to locate all of the information needed to get a detailed undertanding of PKI, TLS, and 801.x in one place. Honestly, I did not even find PKI in one place, not even close. My goal is to provide this as a starting point for others wanting to learn about the topic. 
+
 The below section is a series of vocabulary and short descriptions. They seem mostly unrelated but will be referenced many times later on. It is helpful to familiarize yourself with some of these terms. 
 
 Digital signature vs encryption 
@@ -108,11 +110,42 @@ Part 4
 Example of accessing website up to TLS handshake. Include detail on how certs are verified.
 
 Part 5
-TLS
-TLS handshake
+
+Okay, at this point, we have covered the 5000 foot view of PKI. The following sections are a couple of common technologies that rely on PKI. They are both great examples, and are excelent to understand. 
+
+One thing to know about the TLS standard is that it is not a set standard in terms of what encryption alorithims are used, in that there are several to choose from. 
+
+For example for TLS 1.2 there are 8 different 'cypher suites' to choose from. These each contain one of the following:
+
+1. Key Exchange Method (Eliptical Curve Diffie-Hellman)
+2. Authentication Method (Eliptical Curve DSA, RSA)
+3. Encryption Standard (AES128, AES256)
+4. Hashing Algorithm (SHA256, SHA384)
+
+The first topic we are going to discuss is TLS, or Transport Layer Security. It is what secures the web traffic you are using to view this site right now. It works in the following way.
+
+The following example is light on 'TLS' but is more intended to show how certificates are used. More TLS coming later as I am more comfortable with it.
+
+Client accessing a website example:
+
+1. Client sends a 'clientHello' containing what TLS version and cypher suites the client supports.
+2. Server responds with a 'ServerHello' containing the TLS version and cypher suite the server has chosen based on what the client supports. Typically this is the highest version available. 
+3. Server presents its certificate to the client. 
+4. Client validates the certificate and sends an encryped pre-master secret to the server. 
+I am going to take this time to explain in detail how this validation occurs. This is absolutely critical go gaining understanding to PKI. 
+1. The certificate the server sends to the client contains all certificates between that certificate and the root certificate. So in a two tier architectrure, it would include the web servers certificate, the singing CA's certificate, and the root CA's certificate. 
+2. The certificates are checked against their CRL's
+2. The client reads the signatureValue field of the Web Server's certificate.
+3. The client then takes the subjectPublicKey value from the SIGNING CA'S CERTIFICATE and uses that pubic key to verify the web servers certificate.
+4. This proccess is then repeated except this time the Signing CA's signatureValue is validated using the subjectPublicKey value from the Root CA's certificate. 
+5. This proccess is done one more time, a little different now. The Root CA's certificate's signatureValue is read, but this time it is validated using the Root CA Certificates own subjectPublicKeyInfo value. This is to verify nothing has changed in the Root CA certificate. 
+6. The client then checks to see if the Root CA's certificate is in its local repository of trusted root certificates. If it is, it can deduce the folowing:
+Since the web servers certificate was signed by the issuing CA's certificate (we checked the digital signature on the Web Server's cert), and the Singing CA's certificate was indeed proven to be signed by the Root CA's cert (again proven by checking the digital signature on the Singing CAs cert agains the pubic key of the root certificate), and the Root Certificate was in that devices trusted root certificate store, we therefore trust the Web Servers certificate. 
+5. Server decrypts the pre-master secret and computes the session key.
+TLS established. 
 
 Part 6
-Key exchange
+Key exchange. This sectio will come later, but the Key Exchange is a key part of TLS. 
 
 Part 7
 EAPOL
