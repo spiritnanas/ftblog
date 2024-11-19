@@ -2,6 +2,8 @@
 
 **Preface:** I am not an expert on this topic. I am writing this post as I go, and as I feel comfortable with the information I have learned. I found it very challenging to locate all of the information needed to get a detailed understanding of PKI, TLS, and 802.1x in one place. Honestly, I did not even find PKI in one place, not even close. My goal is to provide this as a starting point for others wanting to learn about the topic.
 
+This post assumes you have a basic knowledge of the main compoents in PKI and why, on the surface, one might want to implement PKI. 
+
 The below section is a series of vocabulary and short descriptions. They seem mostly unrelated but will be referenced many times later on. It is helpful to familiarize yourself with some of these terms.
 
 ### Digital Signature vs Encryption
