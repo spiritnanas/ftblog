@@ -131,6 +131,8 @@ The anatomy of the X.509 cert is important, some parts being more critical to ot
 
 # Part 2
 
+## CSR - Certificate Signing Requests
+
 The next major concept to take on is the CSR, or the Certificate Signing Request. This is the process in which an applicant requests a certificate from a certificate authority. The following goes over that process at a high level.
 
 1. The applicant creates a public/private key pair. The private key is kept secret.
@@ -147,6 +149,17 @@ The next major concept to take on is the CSR, or the Certificate Signing Request
 4. The request is self-signed by the applicant, to prove they have the private key.
 
 5. The request is sent to the signing CA with proof of origin (*i.e.* providing the CA whatever they have defined to ensure you are who you say you are. For internal CAs this is determined by company policy.)
+   
+5.1 **If you are submitting a request to a public CA such as DigiCert or IdenTrust, you will find you often have three options. DV (Domain Validated), OV (Organization Validated), and EV (Extended Validation).**
+
+    
+| Type of Certificate | Domain Validated? | Subject Name Validated? | Address Validated? | Pad Lock Displayed by Browser? | Green Address Bar or Other Special Treatment? | Relative Price |
+|----------------------|-------------------|--------------------------|---------------------|---------------------------------|-----------------------------------------------|----------------|
+| DV                  | X                 |                          |                     | X                               |                                               | $              |
+| OV                  | X                 | X                        | X                   | X                               |                                               | $$             |
+| EV                  | X                 | X                        | X                   | X                               | X                                             | $$$            |
+
+  > As per the CA/B Forum (the organization who writes the DV, OV, and EV standards) - <https://cabforum.org/about/information/consumers/>
 
 6. The Signing CA, assuming everything is correct, will send back a complete X.509 Certificate signed with its private key. The policies on the Signing CA determine what fields are included past that.
 
