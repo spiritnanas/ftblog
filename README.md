@@ -178,23 +178,23 @@ The following example is light on 'TLS' but is more intended to show how certifi
 
 6. **The client is going to verify the certificate from the server,** below is a detail of how the client validates that certificate.
 
-- I am going to take this time to explain in detail how this validation occurs. This is absolutely critical to gaining understanding of PKI.
+    > **I am going to take this time to explain in detail how this validation occurs. This is absolutely critical to gaining understanding of PKI.**
 
-- 6.1. **Certificate Chain:** The certificate the server sends to the client contains all certificates between that certificate and the root certificate. So in a two-tier architecture, it would include the web server's certificate, the signing CA's certificate, and the root CA's certificate.
+    > 6.1. **Certificate Chain:** The certificate the server sends to the client contains all certificates between that certificate and the root certificate. So in a two-tier architecture, it would include the web server's certificate, the signing CA's certificate, and the root CA's certificate.
 
-- 6.2. **CRL Check:** The certificates are checked against their CRLs.
+    > 6.2. **CRL Check:** The certificates are checked against their CRLs.
+    
+    > 6.3. **Verify Web Server's Certificate:** The client reads the **signatureValue** field of the Web Server's certificate.
+    
+    > 6.4. **Verify Using Signing CA's Public Key:** The client then takes the **subjectPublicKey** value from the **Signing CA's Certificate** and uses that public key to verify the web server's certificate.
 
-- 6.3. **Verify Web Server's Certificate:** The client reads the **signatureValue** field of the Web Server's certificate.
+    > 6.5. **Repeat for Signing CA's Certificate:** This process is then repeated except this time the Signing CA's **signatureValue** is validated using the **subjectPublicKey** value from the **Root CA's certificate**.
 
-- 6.4. **Verify Using Signing CA's Public Key:** The client then takes the **subjectPublicKey** value from the **Signing CA's Certificate** and uses that public key to verify the web server's certificate.
+    > 6.6. **Verify Root CA's Certificate:** This process is done one more time, a little different now. The Root CA's certificate's **signatureValue** is read, but this time it is validated using the Root CA Certificate's own **subjectPublicKeyInfo** value. This is to verify nothing has changed in the Root CA certificate.
 
-- 6.5. **Repeat for Signing CA's Certificate:** This process is then repeated except this time the Signing CA's **signatureValue** is validated using the **subjectPublicKey** value from the **Root CA's certificate**.
+    > 6.7. **Check Trusted Root Store:** The client then checks to see if the Root CA's certificate is in its local repository of trusted root certificates. If it is, it can deduce the following:
 
-- 6.6. **Verify Root CA's Certificate:** This process is done one more time, a little different now. The Root CA's certificate's **signatureValue** is read, but this time it is validated using the Root CA Certificate's own **subjectPublicKeyInfo** value. This is to verify nothing has changed in the Root CA certificate.
-
-- 6.7. **Check Trusted Root Store:** The client then checks to see if the Root CA's certificate is in its local repository of trusted root certificates. If it is, it can deduce the following:
-
-   - 6.7.1 Since the web server's certificate was signed by the issuing CA's certificate (we checked the digital signature on the Web Server's cert), and the Signing CA's certificate was indeed proven to be signed by the Root CA's cert (again proven by checking the digital signature on the Signing CA's cert against the public key of the root certificate), and the Root Certificate was in that device's trusted root certificate store, we therefore trust the Web Server's certificate.
+    > 6.8 Since the web server's certificate was signed by the issuing CA's certificate (we checked the digital signature on the Web Server's cert), and the Signing CA's certificate was indeed proven to be signed by the Root CA's cert (again proven by checking the digital signature on the Signing CA's cert against the public key of the root certificate), and the Root Certificate was in that device's trusted root certificate store, we therefore trust the Web Server's certificate.
 
 7. **Client sends the `clientKeyExchange` message.** In this case, as this is a web server example, that is all that is sent (need to verify this step, I believe I am missing something).
 
