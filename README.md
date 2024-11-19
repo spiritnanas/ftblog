@@ -75,6 +75,11 @@ With that out of the way, prepare for more seemingly out-of-order topics. There 
 
 The first item we are going to discuss is the X.509 Public Key Infrastructure Certificate.
 
+Useful tool for viewing website certificates:
+
+<https://crt.sh>
+
+
 # Part 1
 
 ## Anatomy of X.509/RFC 5280
