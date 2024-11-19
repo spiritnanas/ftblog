@@ -122,7 +122,8 @@ The anatomy of the X.509 cert is important, some parts being more critical to ot
 - While I am not exploring extensions in detail yet, there are some very widely used extensions that are worth noting:
   1. subjectAltName: the Subject Alternate Name is used to define additional subjects that this certificate could match. (google.com's certificate may have a subjectAltName of *.google.co.uk and *.google.co.jp for example)
   2. KeyUsage: A set up flags defining how the certificate may be used. 
-  3. extKeyUsage: A newer additional set of flags definign how a certificate may be used. 
+  3. extKeyUsage: A newer additional set of flags definign how a certificate may be used.
+  4. cRLDistributionPoints: Contains the information on where to find the certificate revocation list for that certificates Root CA.
 
 ## Anatomy of PFX File
 
