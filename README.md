@@ -147,7 +147,7 @@ OCSP or Online Certificate Status Protocol was created to solve the problem of m
 
 # Part 4
 
-Example of accessing website up to TLS handshake. Include detail on how certs are verified.
+TBC
 
 # Part 5
 
