@@ -128,21 +128,34 @@ The following example is light on 'TLS' but is more intended to show how certifi
 
 Client accessing a website example:
 
-1. Client sends a 'clientHello' containing what TLS version and cypher suites the client supports.
-2. Server responds with a 'ServerHello' containing the TLS version and cypher suite the server has chosen based on what the client supports. Typically this is the highest version available. 
+1. Client sends a 'clientHello' containing the max TLS version the client supports, a random number to prevent replay attacks, and what cypher suites the client supports. 
+2. Server responds with a 'ServerHello' containing the TLS version and cypher suite the server has chosen based on what the client supports and what the server supports, as well as a random number. Typically this is the highest version available, but can be configured on the server. If the server has no overlap with the client on what it supports, the proccess stops and an error is thrown.
 3. Server presents its certificate to the client. 
-4. Client validates the certificate and sends an encryped pre-master secret to the server. 
+4. The server sends the server key exchange message. This contains the parameters for the Diffie-Hellman key exchange. In addition it sends it Public Value (different than public key) for the Diffie-Hellman excahnge. In addition it sends a digital signature of all of the previous messages so far, that is signed with the servers private key (the same one that is on the certificate).
+5. Server sends a 'serverHelloDone' message, indicating that is all of the data it is sending over for now.
+6. The client is going to verify the certificate from the server, below is a detail of how the client validates that certificate. 
 I am going to take this time to explain in detail how this validation occurs. This is absolutely critical go gaining understanding to PKI. 
 1. The certificate the server sends to the client contains all certificates between that certificate and the root certificate. So in a two tier architectrure, it would include the web servers certificate, the singing CA's certificate, and the root CA's certificate. 
 2. The certificates are checked against their CRL's
-2. The client reads the signatureValue field of the Web Server's certificate.
-3. The client then takes the subjectPublicKey value from the SIGNING CA'S CERTIFICATE and uses that pubic key to verify the web servers certificate.
-4. This proccess is then repeated except this time the Signing CA's signatureValue is validated using the subjectPublicKey value from the Root CA's certificate. 
-5. This proccess is done one more time, a little different now. The Root CA's certificate's signatureValue is read, but this time it is validated using the Root CA Certificates own subjectPublicKeyInfo value. This is to verify nothing has changed in the Root CA certificate. 
-6. The client then checks to see if the Root CA's certificate is in its local repository of trusted root certificates. If it is, it can deduce the folowing:
+3. The client reads the signatureValue field of the Web Server's certificate.
+4. The client then takes the subjectPublicKey value from the SIGNING CA'S CERTIFICATE and uses that pubic key to verify the web servers certificate.
+5. This proccess is then repeated except this time the Signing CA's signatureValue is validated using the subjectPublicKey value from the Root CA's certificate. 
+6. This proccess is done one more time, a little different now. The Root CA's certificate's signatureValue is read, but this time it is validated using the Root CA Certificates own subjectPublicKeyInfo value. This is to verify nothing has changed in the Root CA certificate. 
+7. The client then checks to see if the Root CA's certificate is in its local repository of trusted root certificates. If it is, it can deduce the folowing:
 Since the web servers certificate was signed by the issuing CA's certificate (we checked the digital signature on the Web Server's cert), and the Singing CA's certificate was indeed proven to be signed by the Root CA's cert (again proven by checking the digital signature on the Singing CAs cert agains the pubic key of the root certificate), and the Root Certificate was in that devices trusted root certificate store, we therefore trust the Web Servers certificate. 
-5. Server decrypts the pre-master secret and computes the session key.
+7. Now, the client send the clientKeyExchange message. In this case, as this is a web server example, that is all that is sent (need to verify this step, I believe I am missing something)
+#Note. There is a lot missing here, namely in the Diffe-Hellman key exchange section. There are several steps missing before this related to that. Suffice to say that the client and the server exchanged keys successfully and now have everything they need to talk securely with each other. These are primarily called out in steps 4 and 7 with the client and server key exchanges. 
+8. The client sends a 'changeCypherSpec' message. This message basically says that since the key exchange is done, everything I send from here on out is going to be encrypted. 
+9. The client sends a 'finish' message that contains a summary of all the messages sent back and forth so far. This message is encrypted. If the server can not read it, the proccess has failed. 
+10. The server sends a 'finish' message containing the same thing. Note that the important part of these is the summary. This protects agains attackes where say for example someone was sitting in the middle and intercepting/modifying packets. Since the summaries being sent are from each devices point of view, if they don't match the proccess is aborted, as it means the proccess was tampered with. 
+
 TLS established. 
+
+Summary of what we get from this exchange.
+1. Negotiation of connection terms. This is the proccess for which the client and server sent their respective hello messages, agreeing on how they will communicate. 
+2. Encryption. Taking place by using Diffe-Hellman to exchange the AES keys (to be explained further in Part 6). RSA for example can only be used to encrypt a small amount of data, which is why this step is so important. 
+3. Authentication. This is the use of the PKI certificates and their digital signatures. In this example we only authenticted the web server, but in other uses, such as in EAP-TLS, this proccess is done on both sides. 
+4. Assurance of integrity of the TLS handshake proccess. This is contained in the server and client finish messages, as well as the random numbers. The summaries contained in the finish messages ensure there was no tampering, and the random numbers ensure that a replay attack cant be used. 
 
 Part 6
 Key exchange. This sectio will come later, but the Key Exchange is a key part of TLS. 
