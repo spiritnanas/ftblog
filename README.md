@@ -178,33 +178,33 @@ The following example is light on 'TLS' but is more intended to show how certifi
 
 6. **The client is going to verify the certificate from the server,** below is a detail of how the client validates that certificate.
 
-I am going to take this time to explain in detail how this validation occurs. This is absolutely critical to gaining understanding of PKI.
+- I am going to take this time to explain in detail how this validation occurs. This is absolutely critical to gaining understanding of PKI.
 
-1. **Certificate Chain:** The certificate the server sends to the client contains all certificates between that certificate and the root certificate. So in a two-tier architecture, it would include the web server's certificate, the signing CA's certificate, and the root CA's certificate.
+- 6.1. **Certificate Chain:** The certificate the server sends to the client contains all certificates between that certificate and the root certificate. So in a two-tier architecture, it would include the web server's certificate, the signing CA's certificate, and the root CA's certificate.
 
-2. **CRL Check:** The certificates are checked against their CRLs.
+- 6.2. **CRL Check:** The certificates are checked against their CRLs.
 
-3. **Verify Web Server's Certificate:** The client reads the **signatureValue** field of the Web Server's certificate.
+- 6.3. **Verify Web Server's Certificate:** The client reads the **signatureValue** field of the Web Server's certificate.
 
-4. **Verify Using Signing CA's Public Key:** The client then takes the **subjectPublicKey** value from the **Signing CA's Certificate** and uses that public key to verify the web server's certificate.
+- 6.4. **Verify Using Signing CA's Public Key:** The client then takes the **subjectPublicKey** value from the **Signing CA's Certificate** and uses that public key to verify the web server's certificate.
 
-5. **Repeat for Signing CA's Certificate:** This process is then repeated except this time the Signing CA's **signatureValue** is validated using the **subjectPublicKey** value from the **Root CA's certificate**.
+- 6.5. **Repeat for Signing CA's Certificate:** This process is then repeated except this time the Signing CA's **signatureValue** is validated using the **subjectPublicKey** value from the **Root CA's certificate**.
 
-6. **Verify Root CA's Certificate:** This process is done one more time, a little different now. The Root CA's certificate's **signatureValue** is read, but this time it is validated using the Root CA Certificate's own **subjectPublicKeyInfo** value. This is to verify nothing has changed in the Root CA certificate.
+- 6.6. **Verify Root CA's Certificate:** This process is done one more time, a little different now. The Root CA's certificate's **signatureValue** is read, but this time it is validated using the Root CA Certificate's own **subjectPublicKeyInfo** value. This is to verify nothing has changed in the Root CA certificate.
 
-7. **Check Trusted Root Store:** The client then checks to see if the Root CA's certificate is in its local repository of trusted root certificates. If it is, it can deduce the following:
+- 6.7. **Check Trusted Root Store:** The client then checks to see if the Root CA's certificate is in its local repository of trusted root certificates. If it is, it can deduce the following:
 
-   Since the web server's certificate was signed by the issuing CA's certificate (we checked the digital signature on the Web Server's cert), and the Signing CA's certificate was indeed proven to be signed by the Root CA's cert (again proven by checking the digital signature on the Signing CA's cert against the public key of the root certificate), and the Root Certificate was in that device's trusted root certificate store, we therefore trust the Web Server's certificate.
+   - 6.7.1 Since the web server's certificate was signed by the issuing CA's certificate (we checked the digital signature on the Web Server's cert), and the Signing CA's certificate was indeed proven to be signed by the Root CA's cert (again proven by checking the digital signature on the Signing CA's cert against the public key of the root certificate), and the Root Certificate was in that device's trusted root certificate store, we therefore trust the Web Server's certificate.
 
-8. **Client sends the `clientKeyExchange` message.** In this case, as this is a web server example, that is all that is sent (need to verify this step, I believe I am missing something).
+7. **Client sends the `clientKeyExchange` message.** In this case, as this is a web server example, that is all that is sent (need to verify this step, I believe I am missing something).
 
    > **Note:** There is a lot missing here, namely in the Diffie-Hellman key exchange section. There are several steps missing before this related to that. Suffice to say that the client and the server exchanged keys successfully and now have everything they need to talk securely with each other. These are primarily called out in steps 4 and 7 with the client and server key exchanges.
 
-9. **The client sends a `changeCipherSpec` message.** This message basically says that since the key exchange is done, everything I send from here on out is going to be encrypted.
+8. **The client sends a `changeCipherSpec` message.** This message basically says that since the key exchange is done, everything I send from here on out is going to be encrypted.
 
-10. **The client sends a `finish` message** that contains a summary of all the messages sent back and forth so far. This message is encrypted. If the server cannot read it, the process has failed.
+9. **The client sends a `finish` message** that contains a summary of all the messages sent back and forth so far. This message is encrypted. If the server cannot read it, the process has failed.
 
-11. **The server sends a `finish` message** containing the same thing. Note that the important part of these is the summary. This protects against attacks where, say for example, someone was sitting in the middle and intercepting/modifying packets. Since the summaries being sent are from each device's point of view, if they don't match the process is aborted, as it means the process was tampered with.
+10. **The server sends a `finish` message** containing the same thing. Note that the important part of these is the summary. This protects against attacks where, say for example, someone was sitting in the middle and intercepting/modifying packets. Since the summaries being sent are from each device's point of view, if they don't match the process is aborted, as it means the process was tampered with.
 
 **TLS established.**
 
@@ -260,7 +260,7 @@ Section will contain more in the future, but for now here is a high-level overvi
 
 # Part 9
 
-Medium overview of PKI
+More detailed PKI overview/summary
 
 # Part 10
 
