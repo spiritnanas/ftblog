@@ -12,7 +12,7 @@ A digital signature's goal is to prove that the signer has access to the private
 
 Encryption's goal is to ensure the confidentiality of the data.
 
-- A digital signature is created with the private key and verified with the public key.
+- A digital signature is created by signing a hash of the data to be signed with the private key, which is verifiable with its corresponding public key.
 - Encryption is completed with the public key and decrypted with the private key.
 
 While not a difficult topic to understand, it is key to keep in mind later on.
